@@ -1,9 +1,15 @@
 import tkinter as tk
 import math
+import cmath  # For complex numbers
+import numpy as np  # For matrix and vector operations
+import sympy as sp  # For calculus and solving equations
+import matplotlib.pyplot as plt  # For graphing functions
+from tkinter import messagebox
 
-# Initialize memory and angle mode
+# Initialize memory, history, and angle mode
 memory = 0
 angle_mode = 'RAD'  # Default to radians
+history = []
 
 # Function to evaluate the expression
 def evaluate_expression(expression):
@@ -18,7 +24,9 @@ def evaluate_expression(expression):
                        "abs": abs, "floor": math.floor, "ceil": math.ceil,
                        "sinh": math.sinh, "cosh": math.cosh, "tanh": math.tanh,
                        "asinh": math.asinh, "acosh": math.acosh, "atanh": math.atanh,
-                       "tau": math.tau, "inf": math.inf, "nan": math.nan})
+                       "tau": math.tau, "inf": math.inf, "nan": math.nan,
+                       "complex": complex, "np": np, "sp": sp, "plot": plot_function})
+        history.append(f"{expression} = {result}")
         return result
     except Exception as e:
         return "Error"
@@ -49,6 +57,10 @@ def button_click(symbol):
         entry.delete(0, tk.END)
     elif symbol == "DEG/RAD":
         toggle_angle_mode()
+    elif symbol == "Hist":
+        show_history()
+    elif symbol == "Graph":
+        plot_function(current_text)
     else:
         entry.insert(tk.END, symbol)
 
@@ -58,11 +70,28 @@ def toggle_angle_mode():
     angle_mode = 'DEG' if angle_mode == 'RAD' else 'RAD'
     angle_button.config(text=f"{angle_mode}/RAD")
 
-# Function to apply angle mode conversion
-def apply_angle_mode(symbol):
-    if angle_mode == 'DEG':
-        symbol = f"radians({symbol})"
-    return symbol
+# Function to show history
+def show_history():
+    history_window = tk.Toplevel(root)
+    history_window.title("Calculation History")
+    history_text = tk.Text(history_window, width=50, height=20, bg="#1e2a38", fg="white")
+    history_text.pack(padx=10, pady=10)
+    for item in history:
+        history_text.insert(tk.END, item + "\n")
+
+# Function to plot a mathematical function
+def plot_function(expression):
+    try:
+        x = np.linspace(-10, 10, 400)
+        y = eval(expression, {"__builtins__": None, "np": np, "x": x})
+        plt.plot(x, y)
+        plt.title(f"Graph of {expression}")
+        plt.xlabel("x")
+        plt.ylabel("y")
+        plt.grid(True)
+        plt.show()
+    except Exception as e:
+        messagebox.showerror("Error", "Invalid expression for graphing!")
 
 # Create the main window
 root = tk.Tk()
@@ -93,11 +122,13 @@ buttons = [
     ("sin(", "cos(", "tan(", "!", "="),
     ("asin(", "acos(", "atan(", "sqrt(", "exp("),
     ("pi", "e", "MR", "MC", "M+"),
-    ("M-", "MS", "(", ")", ""),
+    ("M-", "MS", "(", ")", "Hist"),
     ("sinh(", "cosh(", "tanh(", "abs(", "floor("),
     ("asinh(", "acosh(", "atanh(", "ceil(", "tau"),
     ("x^2", "x^3", "DEG/RAD", "mod", "inf"),
-    ("nan", "**", "(", ")", ""),
+    ("nan", "**", "(", ")", "Graph"),
+    ("sp.diff(", "sp.integrate(", "sp.solve(", "np.matrix(", "np.dot("),
+    ("np.cross(", "complex(", "bin(", "oct(", "hex("),
 ]
 
 # Create buttons
@@ -109,6 +140,10 @@ for i, row in enumerate(buttons):
             button = tk.Button(root, text=text, command=lambda: button_click("**3"), **button_style)
         elif text == "mod":
             button = tk.Button(root, text=text, command=lambda: button_click("%"), **button_style)
+        elif text == "Hist":
+            button = tk.Button(root, text=text, command=show_history, **button_style)
+        elif text == "Graph":
+            button = tk.Button(root, text=text, command=lambda: plot_function(entry.get()), **button_style)
         else:
             button = tk.Button(root, text=text, command=lambda t=text: button_click(t), **button_style)
         button.grid(row=i+1, column=j, padx=5, pady=5, sticky="nsew")
