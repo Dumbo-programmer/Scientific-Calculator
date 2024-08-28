@@ -14,7 +14,11 @@ def evaluate_expression(expression):
                        "exp": math.exp, "pi": math.pi, "e": math.e, "sin": math.sin,
                        "cos": math.cos, "tan": math.tan, "asin": math.asin,
                        "acos": math.acos, "atan": math.atan, "radians": math.radians,
-                       "degrees": math.degrees, "factorial": math.factorial, "pow": math.pow})
+                       "degrees": math.degrees, "factorial": math.factorial, "pow": math.pow,
+                       "abs": abs, "floor": math.floor, "ceil": math.ceil,
+                       "sinh": math.sinh, "cosh": math.cosh, "tanh": math.tanh,
+                       "asinh": math.asinh, "acosh": math.acosh, "atanh": math.atanh,
+                       "tau": math.tau, "inf": math.inf, "nan": math.nan})
         return result
     except Exception as e:
         return "Error"
@@ -40,6 +44,9 @@ def button_click(symbol):
     elif symbol == "M-":
         memory -= evaluate_expression(current_text)
         entry.delete(0, tk.END)
+    elif symbol == "MS":
+        memory = evaluate_expression(current_text)
+        entry.delete(0, tk.END)
     elif symbol == "DEG/RAD":
         toggle_angle_mode()
     else:
@@ -59,7 +66,7 @@ def apply_angle_mode(symbol):
 
 # Create the main window
 root = tk.Tk()
-root.title("Scientific Calculator")
+root.title("Advanced Scientific Calculator")
 root.configure(bg="#2e3b4e")
 
 # Define button style
@@ -86,13 +93,24 @@ buttons = [
     ("sin(", "cos(", "tan(", "!", "="),
     ("asin(", "acos(", "atan(", "sqrt(", "exp("),
     ("pi", "e", "MR", "MC", "M+"),
-    ("M-", "DEG/RAD", "(", ")", "")
+    ("M-", "MS", "(", ")", ""),
+    ("sinh(", "cosh(", "tanh(", "abs(", "floor("),
+    ("asinh(", "acosh(", "atanh(", "ceil(", "tau"),
+    ("x^2", "x^3", "DEG/RAD", "mod", "inf"),
+    ("nan", "**", "(", ")", ""),
 ]
 
 # Create buttons
 for i, row in enumerate(buttons):
     for j, text in enumerate(row):
-        button = tk.Button(root, text=text, command=lambda t=text: button_click(t), **button_style)
+        if text == "x^2":
+            button = tk.Button(root, text=text, command=lambda: button_click("**2"), **button_style)
+        elif text == "x^3":
+            button = tk.Button(root, text=text, command=lambda: button_click("**3"), **button_style)
+        elif text == "mod":
+            button = tk.Button(root, text=text, command=lambda: button_click("%"), **button_style)
+        else:
+            button = tk.Button(root, text=text, command=lambda t=text: button_click(t), **button_style)
         button.grid(row=i+1, column=j, padx=5, pady=5, sticky="nsew")
 
 # Angle mode button
