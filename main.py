@@ -9,7 +9,9 @@ from scipy.integrate import odeint
 from scipy.optimize import minimize
 import datetime
 import hashlib
-from tkinter import messagebox
+from sympy import symbols, diff, integrate, solve, simplify, series
+from sympy.plotting import plot as sympy_plot
+from sympy.matrices import Matrix
 from mpl_toolkits.mplot3d import Axes3D  # For 3D plotting
 
 # Initialize memory, history, and angle mode
@@ -17,6 +19,16 @@ memory = 0
 angle_mode = 'RAD'
 history = []
 exchange_rates = {'USD': 1.0, 'EUR': 0.85, 'GBP': 0.75, 'JPY': 110.0}
+
+# RSA encryption/decryption setup
+public_key = None
+private_key = None
+
+# Quantum Mechanics setup
+qubit_state = [1, 0]  # Initial state |0>
+
+# Define symbols for symbolic math
+x, y, z = symbols('x y z')
 
 # Function to evaluate the expression
 def evaluate_expression(expression):
@@ -50,150 +62,93 @@ def evaluate_expression(expression):
                        "hex_to_decimal": hex_to_decimal, "decimal_to_hex": decimal_to_hex,
                        "concat_strings": concat_strings, "string_length": string_length,
                        "substring": substring, "day_of_week": day_of_week, "add_date": add_date,
-                       "subtract_date": subtract_date})
+                       "subtract_date": subtract_date, "simplify_expr": simplify_expr,
+                       "differentiate": differentiate, "integrate": integrate_expr,
+                       "solve_equation": solve_equation, "taylor_series": taylor_series,
+                       "fourier_transform": fourier_transform, "laplace_transform": laplace_transform,
+                       "eigenvalues": eigenvalues, "eigenvectors": eigenvectors,
+                       "lu_decomposition": lu_decomposition, "svd": svd,
+                       "run_python_code": run_python_code, "visualize_sorting": visualize_sorting,
+                       "regex_test": regex_test, "analyze_circuit": analyze_circuit,
+                       "projectile_motion": projectile_motion, "thermodynamics": thermodynamics,
+                       "schrodinger_solver": schrodinger_solver, "quantum_gates": quantum_gates,
+                       "visualize_qubit": visualize_qubit, "mandelbrot_set": mandelbrot_set,
+                       "julia_set": julia_set, "lorenz_attractor": lorenz_attractor,
+                       "caesar_cipher": caesar_cipher, "rsa_encrypt": rsa_encrypt,
+                       "rsa_decrypt": rsa_decrypt, "sha256_hash": sha256_hash})
         history.append(f"{expression} = {result}")
         return result
     except Exception as e:
         return "Error"
 
-# Matrix operations
-def matrix_inverse(matrix):
-    return np.linalg.inv(matrix)
+# Symbolic Mathematics
+def simplify_expr(expr):
+    return simplify(expr)
 
-def matrix_determinant(matrix):
-    return np.linalg.det(matrix)
+def differentiate(expr, var):
+    return diff(expr, var)
 
-def matrix_multiply(matrix1, matrix2):
-    return np.dot(matrix1, matrix2)
+def integrate_expr(expr, var):
+    return integrate(expr, var)
 
-def matrix_transpose(matrix):
-    return np.transpose(matrix)
+def solve_equation(eq, var):
+    return solve(eq, var)
 
-# Complex number operations
-def polar_to_rectangular(r, theta):
-    return cmath.rect(r, theta)
+def taylor_series(expr, var, point=0, order=5):
+    return series(expr, var, point, order)
 
-def rectangular_to_polar(z):
-    return cmath.polar(z)
+# Fourier and Laplace Transforms
+def fourier_transform(expr, var):
+    return sp.fourier_transform(expr, var, sp.omega)
 
-def complex_conjugate(z):
-    return z.conjugate()
+def laplace_transform(expr, var):
+    return sp.laplace_transform(expr, var, s)
 
-# Advanced statistical functions
-def linear_regression(x, y):
-    return np.polyfit(x, y, 1)
+# Matrix Operations
+def eigenvalues(matrix):
+    return np.linalg.eigvals(matrix)
 
-def correlation_coefficient(x, y):
-    return np.corrcoef(x, y)[0, 1]
+def eigenvectors(matrix):
+    _, v = np.linalg.eig(matrix)
+    return v
 
-def variance(data):
-    return np.var(data)
+def lu_decomposition(matrix):
+    return sp.Matrix(matrix).LUdecomposition()
 
-def std_dev(data):
-    return np.std(data)
+def svd(matrix):
+    return np.linalg.svd(matrix)
 
-# Financial functions
-def loan_amortization(principal, annual_rate, years):
-    monthly_rate = annual_rate / 12 / 100
-    months = years * 12
-    payment = principal * monthly_rate / (1 - (1 + monthly_rate) ** -months)
-    return payment
+# Cryptography Functions
+def caesar_cipher(text, shift, encrypt=True):
+    shift = shift if encrypt else -shift
+    return ''.join(chr((ord(char) - 65 + shift) % 26 + 65) if char.isupper() else chr((ord(char) - 97 + shift) % 26 + 97) if char.islower() else char for char in text)
 
-def npv(rate, cash_flows):
-    return np.npv(rate, cash_flows)
+def rsa_encrypt(text, pub_key):
+    return pow(int.from_bytes(text.encode('utf-8'), 'big'), pub_key[0], pub_key[1])
 
-def irr(cash_flows):
-    return np.irr(cash_flows)
+def rsa_decrypt(cipher, priv_key):
+    decrypted = pow(cipher, priv_key[0], priv_key[1])
+    return decrypted.to_bytes((decrypted.bit_length() + 7) // 8, 'big').decode('utf-8')
 
-# Graphing enhancements
-def plot_3d(expression):
-    x = np.linspace(-5, 5, 100)
-    y = np.linspace(-5, 5, 100)
-    X, Y = np.meshgrid(x, y)
-    Z = eval(expression, {"__builtins__": None, "np": np, "X": X, "Y": Y})
+def sha256_hash(text):
+    return hashlib.sha256(text.encode()).hexdigest()
+
+# Quantum Mechanics
+def quantum_gates(state, gate):
+    gates = {
+        'X': np.array([[0, 1], [1, 0]]),
+        'H': (1 / math.sqrt(2)) * np.array([[1, 1], [1, -1]]),
+        'CNOT': np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]])
+    }
+    return np.dot(gates[gate], state)
+
+def visualize_qubit(state):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.plot_surface(X, Y, Z, cmap="viridis")
+    theta = 2 * math.acos(state[0])
+    phi = np.angle(state[1])
+    ax.quiver(0, 0, 0, math.sin(theta) * math.cos(phi), math.sin(theta) * math.sin(phi), math.cos(theta))
     plt.show()
 
-def parametric_plot(x_expression, y_expression):
-    t = np.linspace(0, 2 * np.pi, 400)
-    x = eval(x_expression, {"__builtins__": None, "np": np, "t": t})
-    y = eval(y_expression, {"__builtins__": None, "np": np, "t": t})
-    plt.plot(x, y)
-    plt.show()
-
-# Unit conversions
-def convert_temperature(value, from_unit, to_unit):
-    if from_unit == 'C' and to_unit == 'F':
-        return value * 9/5 + 32
-    elif from_unit == 'F' and to_unit == 'C':
-        return (value - 32) * 5/9
-    elif from_unit == 'C' and to_unit == 'K':
-        return value + 273.15
-    elif from_unit == 'K' and to_unit == 'C':
-        return value - 273.15
-    else:
-        return "Invalid conversion"
-
-def convert_length(value, from_unit, to_unit):
-    conversions = {'m': 1.0, 'ft': 3.28084, 'in': 39.3701, 'cm': 100.0}
-    return value * conversions[to_unit] / conversions[from_unit]
-
-def convert_mass(value, from_unit, to_unit):
-    conversions = {'kg': 1.0, 'lb': 2.20462, 'g': 1000.0}
-    return value * conversions[to_unit] / conversions[from_unit]
-
-# Logical and bitwise operations
-def bitwise_and(a, b):
-    return a & b
-
-def bitwise_or(a, b):
-    return a | b
-
-def bitwise_xor(a, b):
-    return a ^ b
-
-def left_shift(a, n):
-    return a << n
-
-def right_shift(a, n):
-    return a >> n
-
-# Base conversions
-def binary_to_decimal(b):
-    return int(b, 2)
-
-def decimal_to_binary(d):
-    return bin(d)
-
-def hex_to_decimal(h):
-    return int(h, 16)
-
-def decimal_to_hex(d):
-    return hex(d)
-
-# String manipulation
-def concat_strings(*args):
-    return ''.join(args)
-
-def string_length(s):
-    return len(s)
-
-def substring(s, start, end=None):
-    return s[start:end]
-
-# Calendar functions
-def day_of_week(year, month, day):
-    return datetime.date(year, month, day).strftime('%A')
-
-def add_date(year, month, day, days=0, months=0, years=0):
-    return datetime.date(year, month, day) + datetime.timedelta(days=days) + datetime.timedelta(days=months*30) + datetime.timedelta(days=years*365)
-
-def subtract_date(year, month, day, days=0, months=0, years=0):
-    return datetime.date(year, month, day) - datetime.timedelta(days=days) - datetime.timedelta(days=months*30) - datetime.timedelta(days=years*365)
-
-# Implement the rest of the UI, main loop, and button bindings
-# ...
-
+# Run the main loop
 root.mainloop()
