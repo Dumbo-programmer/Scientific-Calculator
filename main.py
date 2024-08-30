@@ -1,12 +1,20 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import ttk, messagebox
 from math import *
 
 root = tk.Tk()
 root.title("Advanced Scientific Calculator")
-root.configure(bg='#222222')
 root.geometry("600x800")
-root.resizable(0, 0)
+root.resizable(True, True)  # Make the window resizable
+
+# Load the azure.tcl theme file
+root.tk.call("source", "azure.tcl")  # Ensure azure.tcl is in the same directory or provide the correct path
+root.tk.call("set_theme", "dark")  # Set the theme to dark mode
+
+# Define styles for ttk buttons and entry using the azure theme
+style = ttk.Style()
+style.configure("TButton", font=("Segoe UI", 18), padding=10, relief="flat")
+style.configure("TEntry", font=("Segoe UI", 20), padding=10)
 
 def add_to_display(text):
     current_text = display.get()
@@ -59,8 +67,6 @@ def log_func():
 def lie_algebra_calculator():
     try:
         result = eval(display.get())
-        # Add logic for Lie Algebra calculations
-        # For demonstration, just taking the factorial of the result
         result = factorial(int(result))
         display.delete(0, tk.END)
         display.insert(0, str(result))
@@ -72,8 +78,6 @@ def lie_algebra_calculator():
 def homotopy_analysis():
     try:
         result = eval(display.get())
-        # Add logic for homotopy analysis
-        # For demonstration, calculating sin of the result
         result = sin(result)
         display.delete(0, tk.END)
         display.insert(0, str(result))
@@ -85,8 +89,6 @@ def homotopy_analysis():
 def wavelet_transform():
     try:
         result = eval(display.get())
-        # Add logic for wavelet transformation
-        # For demonstration, just computing the natural logarithm
         result = log(result)
         display.delete(0, tk.END)
         display.insert(0, str(result))
@@ -98,8 +100,6 @@ def wavelet_transform():
 def symmetry_group_analysis():
     try:
         result = eval(display.get())
-        # Add logic for symmetry group analysis
-        # For demonstration, calculating the cosine of the result
         result = cos(result)
         display.delete(0, tk.END)
         display.insert(0, str(result))
@@ -111,8 +111,6 @@ def symmetry_group_analysis():
 def stochastic_calculus():
     try:
         result = eval(display.get())
-        # Add logic for stochastic calculus
-        # For demonstration, calculating the exponential
         result = exp(result)
         display.delete(0, tk.END)
         display.insert(0, str(result))
@@ -121,18 +119,8 @@ def stochastic_calculus():
         display.insert(0, "Error")
         messagebox.showerror("Error", f"Invalid Operation: {e}")
 
-display = tk.Entry(root, font=("Helvetica", 20), borderwidth=2, relief="solid")
-display.grid(row=0, column=0, columnspan=5, padx=10, pady=10, sticky="we")
-
-button_style = {
-    'padx': 20,
-    'pady': 20,
-    'bd': 1,
-    'bg': '#333333',
-    'fg': 'white',
-    'font': ('Helvetica', 18),
-    'relief': 'flat'
-}
+display = ttk.Entry(root, style="TEntry")
+display.grid(row=0, column=0, columnspan=5, padx=10, pady=20, sticky="we")
 
 buttons = [
     ('7', 1, 0), ('8', 1, 1), ('9', 1, 2), ('/', 1, 3),
@@ -144,17 +132,17 @@ buttons = [
 
 for (text, row, col) in buttons:
     if text == '=':
-        tk.Button(root, text=text, command=calculate, **button_style).grid(row=row, column=col, columnspan=2, sticky="nsew")
+        ttk.Button(root, text=text, command=calculate, style="TButton").grid(row=row, column=col, columnspan=2, sticky="nsew", padx=5, pady=5)
     elif text == 'C':
-        tk.Button(root, text=text, command=clear_display, **button_style).grid(row=row, column=col, sticky="nsew")
+        ttk.Button(root, text=text, command=clear_display, style="TButton").grid(row=row, column=col, sticky="nsew", padx=5, pady=5)
     elif text == '√':
-        tk.Button(root, text=text, command=sqrt_func, **button_style).grid(row=row, column=col, sticky="nsew")
+        ttk.Button(root, text=text, command=sqrt_func, style="TButton").grid(row=row, column=col, sticky="nsew", padx=5, pady=5)
     elif text == 'log':
-        tk.Button(root, text=text, command=log_func, **button_style).grid(row=row, column=col, sticky="nsew")
+        ttk.Button(root, text=text, command=log_func, style="TButton").grid(row=row, column=col, sticky="nsew", padx=5, pady=5)
     elif text == '!':
-        tk.Button(root, text=text, command=factorial_func, **button_style).grid(row=row, column=col, sticky="nsew")
+        ttk.Button(root, text=text, command=factorial_func, style="TButton").grid(row=row, column=col, sticky="nsew", padx=5, pady=5)
     else:
-        tk.Button(root, text=text, command=lambda txt=text: add_to_display(txt), **button_style).grid(row=row, column=col, sticky="nsew")
+        ttk.Button(root, text=text, command=lambda txt=text: add_to_display(txt), style="TButton").grid(row=row, column=col, sticky="nsew", padx=5, pady=5)
 
 advanced_buttons = [
     ("Lie Alg", lie_algebra_calculator, 6, 0),
@@ -165,6 +153,7 @@ advanced_buttons = [
 ]
 
 for (text, command, row, col) in advanced_buttons:
-    tk.Button(root, text=text, command=command, **button_style).grid(row=row, column=col, sticky="nsew")
+    ttk.Button(root, text=text, command=command, style="TButton").grid(row=row, column=col, sticky="nsew", padx=5, pady=5)
 
 root.mainloop()
+
