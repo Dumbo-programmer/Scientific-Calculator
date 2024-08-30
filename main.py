@@ -1,154 +1,170 @@
 import tkinter as tk
-import math
-import cmath
-import numpy as np
-import sympy as sp
-import matplotlib.pyplot as plt
-from scipy.fftpack import fft
-from scipy.integrate import odeint
-from scipy.optimize import minimize
-import datetime
-import hashlib
-from sympy import symbols, diff, integrate, solve, simplify, series
-from sympy.plotting import plot as sympy_plot
-from sympy.matrices import Matrix
-from mpl_toolkits.mplot3d import Axes3D  # For 3D plotting
+from tkinter import messagebox
+from math import *
 
-# Initialize memory, history, and angle mode
-memory = 0
-angle_mode = 'RAD'
-history = []
-exchange_rates = {'USD': 1.0, 'EUR': 0.85, 'GBP': 0.75, 'JPY': 110.0}
+root = tk.Tk()
+root.title("Advanced Scientific Calculator")
+root.configure(bg='#222222')
+root.geometry("600x800")
+root.resizable(0, 0)
 
-# RSA encryption/decryption setup
-public_key = None
-private_key = None
+def add_to_display(text):
+    current_text = display.get()
+    display.delete(0, tk.END)
+    display.insert(0, current_text + text)
 
-# Quantum Mechanics setup
-qubit_state = [1, 0]  # Initial state |0>
-
-# Define symbols for symbolic math
-x, y, z = symbols('x y z')
-
-# Function to evaluate the expression
-def evaluate_expression(expression):
+def calculate():
     try:
-        result = eval(expression, {"__builtins__": None},
-                      {"sqrt": math.sqrt, "log": math.log, "log10": math.log10,
-                       "exp": math.exp, "pi": math.pi, "e": math.e, "sin": math.sin,
-                       "cos": math.cos, "tan": math.tan, "asin": math.asin,
-                       "acos": math.acos, "atan": math.atan, "radians": math.radians,
-                       "degrees": math.degrees, "factorial": math.factorial, "pow": math.pow,
-                       "abs": abs, "floor": math.floor, "ceil": math.ceil,
-                       "sinh": math.sinh, "cosh": math.cosh, "tanh": math.tanh,
-                       "asinh": math.asinh, "acosh": math.acosh, "atanh": math.atanh,
-                       "tau": math.tau, "inf": math.inf, "nan": math.nan,
-                       "complex": complex, "np": np, "sp": sp, "fft": fft, "odeint": odeint,
-                       "hashlib": hashlib, "datetime": datetime, "minimize": minimize,
-                       "plot": plot_function, "solve_ode": solve_ode, "prime_factors": prime_factors,
-                       "is_prime": is_prime, "list_primes": list_primes, "currency_convert": currency_convert,
-                       "polynomial_roots": polynomial_roots, "calculate_date_difference": calculate_date_difference,
-                       "matrix_inverse": matrix_inverse, "matrix_determinant": matrix_determinant,
-                       "matrix_multiply": matrix_multiply, "matrix_transpose": matrix_transpose,
-                       "polar_to_rectangular": polar_to_rectangular, "rectangular_to_polar": rectangular_to_polar,
-                       "complex_conjugate": complex_conjugate, "linear_regression": linear_regression,
-                       "correlation_coefficient": correlation_coefficient, "variance": variance,
-                       "std_dev": std_dev, "loan_amortization": loan_amortization,
-                       "npv": npv, "irr": irr, "plot_3d": plot_3d, "parametric_plot": parametric_plot,
-                       "convert_temperature": convert_temperature, "convert_length": convert_length,
-                       "convert_mass": convert_mass, "bitwise_and": bitwise_and, "bitwise_or": bitwise_or,
-                       "bitwise_xor": bitwise_xor, "left_shift": left_shift, "right_shift": right_shift,
-                       "binary_to_decimal": binary_to_decimal, "decimal_to_binary": decimal_to_binary,
-                       "hex_to_decimal": hex_to_decimal, "decimal_to_hex": decimal_to_hex,
-                       "concat_strings": concat_strings, "string_length": string_length,
-                       "substring": substring, "day_of_week": day_of_week, "add_date": add_date,
-                       "subtract_date": subtract_date, "simplify_expr": simplify_expr,
-                       "differentiate": differentiate, "integrate": integrate_expr,
-                       "solve_equation": solve_equation, "taylor_series": taylor_series,
-                       "fourier_transform": fourier_transform, "laplace_transform": laplace_transform,
-                       "eigenvalues": eigenvalues, "eigenvectors": eigenvectors,
-                       "lu_decomposition": lu_decomposition, "svd": svd,
-                       "run_python_code": run_python_code, "visualize_sorting": visualize_sorting,
-                       "regex_test": regex_test, "analyze_circuit": analyze_circuit,
-                       "projectile_motion": projectile_motion, "thermodynamics": thermodynamics,
-                       "schrodinger_solver": schrodinger_solver, "quantum_gates": quantum_gates,
-                       "visualize_qubit": visualize_qubit, "mandelbrot_set": mandelbrot_set,
-                       "julia_set": julia_set, "lorenz_attractor": lorenz_attractor,
-                       "caesar_cipher": caesar_cipher, "rsa_encrypt": rsa_encrypt,
-                       "rsa_decrypt": rsa_decrypt, "sha256_hash": sha256_hash})
-        history.append(f"{expression} = {result}")
-        return result
+        result = eval(display.get())
+        display.delete(0, tk.END)
+        display.insert(0, str(result))
     except Exception as e:
-        return "Error"
+        display.delete(0, tk.END)
+        display.insert(0, "Error")
+        messagebox.showerror("Error", f"Invalid Operation: {e}")
 
-# Symbolic Mathematics
-def simplify_expr(expr):
-    return simplify(expr)
+def clear_display():
+    display.delete(0, tk.END)
 
-def differentiate(expr, var):
-    return diff(expr, var)
+def factorial_func():
+    try:
+        result = factorial(int(display.get()))
+        display.delete(0, tk.END)
+        display.insert(0, str(result))
+    except Exception as e:
+        display.delete(0, tk.END)
+        display.insert(0, "Error")
+        messagebox.showerror("Error", f"Invalid Operation: {e}")
 
-def integrate_expr(expr, var):
-    return integrate(expr, var)
+def sqrt_func():
+    try:
+        result = sqrt(float(display.get()))
+        display.delete(0, tk.END)
+        display.insert(0, str(result))
+    except Exception as e:
+        display.delete(0, tk.END)
+        display.insert(0, "Error")
+        messagebox.showerror("Error", f"Invalid Operation: {e}")
 
-def solve_equation(eq, var):
-    return solve(eq, var)
+def log_func():
+    try:
+        result = log10(float(display.get()))
+        display.delete(0, tk.END)
+        display.insert(0, str(result))
+    except Exception as e:
+        display.delete(0, tk.END)
+        display.insert(0, "Error")
+        messagebox.showerror("Error", f"Invalid Operation: {e}")
 
-def taylor_series(expr, var, point=0, order=5):
-    return series(expr, var, point, order)
+def lie_algebra_calculator():
+    try:
+        result = eval(display.get())
+        # Add logic for Lie Algebra calculations
+        # For demonstration, just taking the factorial of the result
+        result = factorial(int(result))
+        display.delete(0, tk.END)
+        display.insert(0, str(result))
+    except Exception as e:
+        display.delete(0, tk.END)
+        display.insert(0, "Error")
+        messagebox.showerror("Error", f"Invalid Operation: {e}")
 
-# Fourier and Laplace Transforms
-def fourier_transform(expr, var):
-    return sp.fourier_transform(expr, var, sp.omega)
+def homotopy_analysis():
+    try:
+        result = eval(display.get())
+        # Add logic for homotopy analysis
+        # For demonstration, calculating sin of the result
+        result = sin(result)
+        display.delete(0, tk.END)
+        display.insert(0, str(result))
+    except Exception as e:
+        display.delete(0, tk.END)
+        display.insert(0, "Error")
+        messagebox.showerror("Error", f"Invalid Operation: {e}")
 
-def laplace_transform(expr, var):
-    return sp.laplace_transform(expr, var, s)
+def wavelet_transform():
+    try:
+        result = eval(display.get())
+        # Add logic for wavelet transformation
+        # For demonstration, just computing the natural logarithm
+        result = log(result)
+        display.delete(0, tk.END)
+        display.insert(0, str(result))
+    except Exception as e:
+        display.delete(0, tk.END)
+        display.insert(0, "Error")
+        messagebox.showerror("Error", f"Invalid Operation: {e}")
 
-# Matrix Operations
-def eigenvalues(matrix):
-    return np.linalg.eigvals(matrix)
+def symmetry_group_analysis():
+    try:
+        result = eval(display.get())
+        # Add logic for symmetry group analysis
+        # For demonstration, calculating the cosine of the result
+        result = cos(result)
+        display.delete(0, tk.END)
+        display.insert(0, str(result))
+    except Exception as e:
+        display.delete(0, tk.END)
+        display.insert(0, "Error")
+        messagebox.showerror("Error", f"Invalid Operation: {e}")
 
-def eigenvectors(matrix):
-    _, v = np.linalg.eig(matrix)
-    return v
+def stochastic_calculus():
+    try:
+        result = eval(display.get())
+        # Add logic for stochastic calculus
+        # For demonstration, calculating the exponential
+        result = exp(result)
+        display.delete(0, tk.END)
+        display.insert(0, str(result))
+    except Exception as e:
+        display.delete(0, tk.END)
+        display.insert(0, "Error")
+        messagebox.showerror("Error", f"Invalid Operation: {e}")
 
-def lu_decomposition(matrix):
-    return sp.Matrix(matrix).LUdecomposition()
+display = tk.Entry(root, font=("Helvetica", 20), borderwidth=2, relief="solid")
+display.grid(row=0, column=0, columnspan=5, padx=10, pady=10, sticky="we")
 
-def svd(matrix):
-    return np.linalg.svd(matrix)
+button_style = {
+    'padx': 20,
+    'pady': 20,
+    'bd': 1,
+    'bg': '#333333',
+    'fg': 'white',
+    'font': ('Helvetica', 18),
+    'relief': 'flat'
+}
 
-# Cryptography Functions
-def caesar_cipher(text, shift, encrypt=True):
-    shift = shift if encrypt else -shift
-    return ''.join(chr((ord(char) - 65 + shift) % 26 + 65) if char.isupper() else chr((ord(char) - 97 + shift) % 26 + 97) if char.islower() else char for char in text)
+buttons = [
+    ('7', 1, 0), ('8', 1, 1), ('9', 1, 2), ('/', 1, 3),
+    ('4', 2, 0), ('5', 2, 1), ('6', 2, 2), ('*', 2, 3),
+    ('1', 3, 0), ('2', 3, 1), ('3', 3, 2), ('-', 3, 3),
+    ('0', 4, 0), ('.', 4, 1), ('+', 4, 2), ('=', 4, 3),
+    ('C', 5, 0), ('√', 5, 1), ('log', 5, 2), ('!', 5, 3),
+]
 
-def rsa_encrypt(text, pub_key):
-    return pow(int.from_bytes(text.encode('utf-8'), 'big'), pub_key[0], pub_key[1])
+for (text, row, col) in buttons:
+    if text == '=':
+        tk.Button(root, text=text, command=calculate, **button_style).grid(row=row, column=col, columnspan=2, sticky="nsew")
+    elif text == 'C':
+        tk.Button(root, text=text, command=clear_display, **button_style).grid(row=row, column=col, sticky="nsew")
+    elif text == '√':
+        tk.Button(root, text=text, command=sqrt_func, **button_style).grid(row=row, column=col, sticky="nsew")
+    elif text == 'log':
+        tk.Button(root, text=text, command=log_func, **button_style).grid(row=row, column=col, sticky="nsew")
+    elif text == '!':
+        tk.Button(root, text=text, command=factorial_func, **button_style).grid(row=row, column=col, sticky="nsew")
+    else:
+        tk.Button(root, text=text, command=lambda txt=text: add_to_display(txt), **button_style).grid(row=row, column=col, sticky="nsew")
 
-def rsa_decrypt(cipher, priv_key):
-    decrypted = pow(cipher, priv_key[0], priv_key[1])
-    return decrypted.to_bytes((decrypted.bit_length() + 7) // 8, 'big').decode('utf-8')
+advanced_buttons = [
+    ("Lie Alg", lie_algebra_calculator, 6, 0),
+    ("Homotopy", homotopy_analysis, 6, 1),
+    ("Wavelet", wavelet_transform, 6, 2),
+    ("Symmetry", symmetry_group_analysis, 6, 3),
+    ("Stochastic", stochastic_calculus, 7, 0),
+]
 
-def sha256_hash(text):
-    return hashlib.sha256(text.encode()).hexdigest()
+for (text, command, row, col) in advanced_buttons:
+    tk.Button(root, text=text, command=command, **button_style).grid(row=row, column=col, sticky="nsew")
 
-# Quantum Mechanics
-def quantum_gates(state, gate):
-    gates = {
-        'X': np.array([[0, 1], [1, 0]]),
-        'H': (1 / math.sqrt(2)) * np.array([[1, 1], [1, -1]]),
-        'CNOT': np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]])
-    }
-    return np.dot(gates[gate], state)
-
-def visualize_qubit(state):
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    theta = 2 * math.acos(state[0])
-    phi = np.angle(state[1])
-    ax.quiver(0, 0, 0, math.sin(theta) * math.cos(phi), math.sin(theta) * math.sin(phi), math.cos(theta))
-    plt.show()
-
-# Run the main loop
 root.mainloop()
