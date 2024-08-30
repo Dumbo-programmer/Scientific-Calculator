@@ -3,7 +3,7 @@ from tkinter import ttk, messagebox
 from math import *
 
 root = tk.Tk()
-root.title("Advanced Scientific Calculator")
+root.title("Scientific Calculator")
 root.geometry("600x800")
 root.resizable(True, True)  # Make the window resizable
 
